@@ -19,10 +19,5 @@
         /// Gets or sets the task description.
         /// </summary>
         public string Description { get; set; }
-
-        /// <summary>
-        /// Gets or sets the identifier of the employee which worked on the task.
-        /// </summary>
-        public int? EmployeeId { get; set; }
     }
 }
