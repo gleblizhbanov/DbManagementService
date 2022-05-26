@@ -2,11 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using Services.Employees;
 using Services.EntityFrameworkCore.Context;
 using Services.EntityFrameworkCore.Employees;
+using Services.EntityFrameworkCore.Tasks;
+using Services.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddTransient<IEmployeeManagementService, EmployeeManagementService>();
+builder.Services.AddTransient<ITaskManagementsService, TaskManagementService>();
 
 builder.Services.AddDbContext<TasksManagementContext>(options =>
 {
