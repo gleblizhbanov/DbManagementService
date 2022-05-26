@@ -7,7 +7,7 @@ namespace WebApiApp.Controllers
     /// <summary>
     /// Provides a work time data API controller.
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("api/data")]
     [ApiController]
     public class WorkTimeDataController : ControllerBase
     {

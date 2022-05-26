@@ -3,6 +3,7 @@ using Services.EntityFrameworkCore.Context;
 using Services.EntityFrameworkCore.Entities;
 using Services.Models;
 using Services.WorkTime;
+using Task = Services.EntityFrameworkCore.Entities.Task;
 
 namespace Services.EntityFrameworkCore.WorkTime
 {
@@ -86,6 +87,34 @@ namespace Services.EntityFrameworkCore.WorkTime
             return await this.context.SaveChangesAsync().ConfigureAwait(false) > 0;
         }
 
+
+        /// <inheritdoc/>
+        public async Task<IList<EmployeeModel>> GetAllEmployeesWorkedOnTaskAsync(int taskId)
+        {
+            return await this.context.WorkTimeData.Where(d => d.TaskId == taskId)
+                                                  .Select(d => GetEmployeeModel(d.Employee))
+                                                  .ToListAsync()
+                                                  .ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<IList<TaskModel>> GetAllEmployeeTasksAsync(int employeeId)
+        {
+            return await this.context.WorkTimeData.Where(d => d.EmployeeId == employeeId)
+                                                  .Select(d => GetTaskModel(d.Task))
+                                                  .ToListAsync()
+                                                  .ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<IList<WorkTimeDataModel>> GetWorkTimeDataAsync(int employeeId)
+        {
+            return await this.context.WorkTimeData.Where(d => d.EmployeeId == employeeId)
+                                                  .Select(d => GetWorkTimeDataModel(d))
+                                                  .ToListAsync()
+                                                  .ConfigureAwait(false);
+        }
+
         private static WorkTimeDataModel GetWorkTimeDataModel(WorkTimeData data) =>
             new()
             {
@@ -104,6 +133,24 @@ namespace Services.EntityFrameworkCore.WorkTime
                 EmployeeId = data.EmployeeId,
                 WorkDate = data.WorkDate,
                 SpentTime = data.SpentTime,
+            };
+
+        private static EmployeeModel GetEmployeeModel(Employee employee) =>
+            new()
+            {
+                Id = employee.Id,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                PhoneNumber = employee.PhoneNumber,
+                Email = employee.Email,
+            };
+
+        private static TaskModel GetTaskModel(Task task) =>
+            new()
+            {
+                Id = task.Id,
+                Name = task.Name,
+                Description = task.Description,
             };
     }
 }

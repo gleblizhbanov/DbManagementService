@@ -42,5 +42,26 @@ namespace Services.WorkTime
         /// <param name="id">Work time data identifier.</param>
         /// <returns>True if work time data was deleted successfully, false otherwise.</returns>
         Task<bool> DeleteWorkTimeDataAsync(int id);
+
+        /// <summary>
+        /// Returns a list of all employees who worked on given task.
+        /// </summary>
+        /// <param name="taskId">A task identifier.</param>
+        /// <returns>A list of employees.</returns>
+        Task<IList<EmployeeModel>> GetAllEmployeesWorkedOnTaskAsync(int taskId);
+
+        /// <summary>
+        /// Returns a list of all employees who worked on given task.
+        /// </summary>
+        /// <param name="employeeId">A task identifier.</param>
+        /// <returns>A list of employees.</returns>
+        Task<IList<TaskModel>> GetAllEmployeeTasksAsync(int employeeId);
+
+        /// <summary>
+        /// Returns a list of all work time data of a given employee.
+        /// </summary>
+        /// <param name="employeeId">An employee identifier.</param>
+        /// <returns>A list of work time data.</returns>
+        Task<IList<WorkTimeDataModel>> GetWorkTimeDataAsync(int employeeId);
     }
 }

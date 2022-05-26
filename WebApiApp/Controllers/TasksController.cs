@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Models;
 using Services.Tasks;
+using Services.WorkTime;
 
 namespace WebApiApp.Controllers
 {
@@ -12,14 +13,16 @@ namespace WebApiApp.Controllers
     public class TasksController : ControllerBase
     {
         private readonly ITaskManagementsService taskManagementsService;
+        private readonly IWorkTimeDataManagementService workTimeDataManagementService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TasksController"/> class.
         /// </summary>
         /// <param name="taskManagementsService">A task management service.</param>
-        public TasksController(ITaskManagementsService taskManagementsService)
+        public TasksController(ITaskManagementsService taskManagementsService, IWorkTimeDataManagementService workTimeDataManagementService)
         {
             this.taskManagementsService = taskManagementsService;
+            this.workTimeDataManagementService = workTimeDataManagementService;
         }
 
         /// <inheritdoc cref="ITaskManagementsService.CreateTaskAsync"/>
@@ -114,6 +117,29 @@ namespace WebApiApp.Controllers
             }
 
             return BadRequest();
+        }
+
+        /// <returns>An action result with list of all employees who worked on given task.</returns>
+        /// <inheritdoc cref="IWorkTimeDataManagementService.GetAllEmployeesWorkedOnTaskAsync"/>
+        [HttpGet("{taskId:int}/employees")]
+        public async Task<ActionResult<IList<EmployeeModel>>> GetEmployees(int taskId)
+        {
+            if (taskId <= 0)
+            {
+                return BadRequest();
+            }
+
+            if (!this.taskManagementsService.TryShowTask(taskId, out _))
+            {
+                return NotFound();
+            }
+
+            if (await this.workTimeDataManagementService.GetAllEmployeesWorkedOnTaskAsync(taskId).ConfigureAwait(false) is not List<EmployeeModel> employees)
+            {
+                return BadRequest();
+            }
+
+            return employees;
         }
     }
 }

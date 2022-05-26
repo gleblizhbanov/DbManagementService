@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Employees;
 using Services.Models;
+using Services.Tasks;
+using Services.WorkTime;
 
 namespace WebApiApp.Controllers
 {
@@ -12,14 +14,20 @@ namespace WebApiApp.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeManagementService employeeManagementService;
+        private readonly ITaskManagementsService tasksManagementsService;
+        private readonly IWorkTimeDataManagementService workTimeDataManagementService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EmployeesController"/> class.
         /// </summary>
         /// <param name="employeeManagementService">An employee management service.</param>
-        public EmployeesController(IEmployeeManagementService employeeManagementService)
+        /// <param name="tasksManagementsService">Tasks management service.</param>
+        /// <param name="workTimeDataManagementService">Work time data management service.</param>
+        public EmployeesController(IEmployeeManagementService employeeManagementService, ITaskManagementsService tasksManagementsService, IWorkTimeDataManagementService workTimeDataManagementService)
         {
             this.employeeManagementService = employeeManagementService;
+            this.tasksManagementsService = tasksManagementsService;
+            this.workTimeDataManagementService = workTimeDataManagementService;
         }
 
         /// <inheritdoc cref="IEmployeeManagementService.CreateEmployeeAsync"/>
@@ -51,7 +59,7 @@ namespace WebApiApp.Controllers
 
             return employees;
         }
-        
+
         /// <summary>
         /// Gets an employee with specific identifier.
         /// </summary>
@@ -114,6 +122,58 @@ namespace WebApiApp.Controllers
             }
 
             return BadRequest();
+        }
+
+        /// <returns>An action result with list of tasks.</returns>
+        /// <inheritdoc cref="IWorkTimeDataManagementService.GetAllEmployeeTasksAsync"/>
+        [HttpGet("{id:int}/tasks")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IList<TaskModel>>> GetTasks(int employeeId)
+        {
+            if (employeeId <= 0)
+            {
+                return BadRequest();
+            }
+
+            if (!this.employeeManagementService.TryShowEmployee(employeeId, out _))
+            {
+                return NotFound();
+            }
+
+            if (await this.workTimeDataManagementService.GetAllEmployeeTasksAsync(employeeId).ConfigureAwait(false) is not List<TaskModel> tasks)
+            {
+                return BadRequest();
+            }
+
+            return tasks;
+        }
+
+        /// <returns>An action result with list of work time data.</returns>
+        /// <inheritdoc cref="IWorkTimeDataManagementService.GetWorkTimeDataAsync(int)"/>
+        [HttpGet("{employeeId:int}/data")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IList<WorkTimeDataModel>>> GetWorkTimeDataAsync(int employeeId)
+        {
+            if (employeeId <= 0)
+            {
+                return BadRequest();
+            }
+
+            if (!this.employeeManagementService.TryShowEmployee(employeeId, out _))
+            {
+                return NotFound();
+            }
+
+            if (await this.workTimeDataManagementService.GetWorkTimeDataAsync(employeeId).ConfigureAwait(false) is not List<WorkTimeDataModel> data)
+            {
+                return NotFound();
+            }
+
+            return data;
         }
     }
 }
