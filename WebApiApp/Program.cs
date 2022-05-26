@@ -3,13 +3,16 @@ using Services.Employees;
 using Services.EntityFrameworkCore.Context;
 using Services.EntityFrameworkCore.Employees;
 using Services.EntityFrameworkCore.Tasks;
+using Services.EntityFrameworkCore.WorkTime;
 using Services.Tasks;
+using Services.WorkTime;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddTransient<IEmployeeManagementService, EmployeeManagementService>();
 builder.Services.AddTransient<ITaskManagementsService, TaskManagementService>();
+builder.Services.AddTransient<IWorkTimeDataManagementService, WorkTimeManagementService>();
 
 builder.Services.AddDbContext<TasksManagementContext>(options =>
 {
