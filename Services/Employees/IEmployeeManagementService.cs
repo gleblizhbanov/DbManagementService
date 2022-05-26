@@ -1,9 +1,10 @@
-﻿namespace Services
+﻿namespace Services.Employees
 {
     /// <summary>
-    /// Represent a management service for employees.
+    /// Represents a managements service for employees.
     /// </summary>
     public interface IEmployeeManagementService
     {
+
     }
 }
