@@ -116,13 +116,47 @@ namespace WebApiApp.Controllers
             return BadRequest();
         }
 
+        
+        /// <returns>An action result with employee.</returns>
+        /// <inheritdoc cref="IWorkTimeDataManagementService.GetEmployeeAsync"/>
         [HttpGet("{workTimeDataId:int}/employee")]
-        public async Task<ActionResult<EmployeeModel>> GetEmployee(int workTimeDataId)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<EmployeeModel>> GetEmployeeAsync(int workTimeDataId)
         {
             if (workTimeDataId <= 0)
             {
                 return BadRequest();
             }
+
+            if (!this.workTimeDataManagementService.TryShowWorkTimeData(workTimeDataId, out _))
+            {
+                return NotFound();
+            }
+
+            return await this.workTimeDataManagementService.GetEmployeeAsync(workTimeDataId).ConfigureAwait(false);
+        }
+
+        /// <returns>An action result with task.</returns>
+        ///  /// <inheritdoc cref="IWorkTimeDataManagementService.GetTaskAsync"/>
+        [HttpGet("{workTimeDataId:int}/task")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<TaskModel>> GetTaskAsync(int workTimeDataId)
+        {
+            if (workTimeDataId <= 0)
+            {
+                return BadRequest();
+            }
+
+            if (!this.workTimeDataManagementService.TryShowWorkTimeData(workTimeDataId, out _))
+            {
+                return NotFound();
+            }
+
+            return await this.workTimeDataManagementService.GetTaskAsync(workTimeDataId).ConfigureAwait(false);
         }
     }
 }
