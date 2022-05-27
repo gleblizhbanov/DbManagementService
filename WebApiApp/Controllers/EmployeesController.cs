@@ -126,7 +126,7 @@ namespace WebApiApp.Controllers
 
         /// <returns>An action result with list of tasks.</returns>
         /// <inheritdoc cref="IWorkTimeDataManagementService.GetAllEmployeeTasksAsync"/>
-        [HttpGet("{id:int}/tasks")]
+        [HttpGet("{employeeId:int}/tasks")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
