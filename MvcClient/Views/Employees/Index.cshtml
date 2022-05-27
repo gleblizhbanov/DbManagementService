@@ -1,0 +1,44 @@
+﻿@model IEnumerable<EmployeeViewModel>
+
+@Html.ActionLink("Create new employee", "Create", new{}, htmlAttributes: new { @class = "btn btn-warning mb-3"})
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Employee.FirstName)</th>
+            <th>@Html.DisplayNameFor(model => model.Employee.LastName)</th>
+            <th>@Html.DisplayNameFor(model => model.Employee.PhoneNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.Employee.Email)</th>
+            <th>Tasks</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var data in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(model => data.Employee.FirstName)</td>
+                <td>@Html.DisplayFor(model => data.Employee.LastName)</td>
+                <td>@Html.DisplayFor(model => data.Employee.PhoneNumber)</td>
+                <td>@Html.DisplayFor(model => data.Employee.Email)</td>
+                <td>
+                    @if (data.TasksCount > 0)
+                    {
+                        <a asp-controller="Employees" asp-action="Index">@data.TasksCount tasks</a>
+                    }
+                    else
+                    {
+                        <span>Haven't worked yet.</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-primary" role="button" asp-controller="Employees" asp-action="Edit" asp-route-id="@data.Employee.Id">Edit</a>
+                    @if (data.TasksCount <= 0)
+                    {
+                        <a class="btn btn-danger" role="button" asp-controller="Employees" asp-action="Delete" asp-route-id="@data.Employee.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
