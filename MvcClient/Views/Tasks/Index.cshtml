@@ -1,0 +1,49 @@
+﻿@model IEnumerable<TaskViewModel>
+
+@Html.ActionLink("Create new task", "Create", new{}, htmlAttributes: new { @class = "btn btn-warning mb-3"})
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Task.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Task.Description)</th>
+            <th>Employees</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var data in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(model => data.Task.Name)</td>
+                <td>
+                @if (data.Task.Description is null)
+                {
+                    <span>No description</span>
+                }
+                else
+                {
+                    @Html.DisplayFor(model => data.Task.Description)
+                }
+                </td>
+                <td>
+                    @if (data.EmployeesCount > 0)
+                    {
+                        <a asp-controller="Tasks" asp-action="Index">@data.EmployeesCount employees worked on the task.</a>
+                    }
+                    else
+                    {
+                        <span>No employees worked on this task.</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-primary" role="button" asp-controller="Tasks" asp-action="Edit" asp-route-id="@data.Task.Id">Edit</a>
+                    @if (data.EmployeesCount <= 0)
+                    {
+                        <a class="btn btn-danger" role="button" asp-controller="Tasks" asp-action="Delete" asp-route-id="@data.Task.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
