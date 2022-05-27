@@ -63,5 +63,19 @@ namespace Services.WorkTime
         /// <param name="employeeId">An employee identifier.</param>
         /// <returns>A list of work time data.</returns>
         Task<IList<WorkTimeDataModel>> GetWorkTimeDataAsync(int employeeId);
+
+        /// <summary>
+        /// Returns an employee from given work time data.
+        /// </summary>
+        /// <param name="workTimeDataId">Work time data identifier.</param>
+        /// <returns>Employee from work time data.</returns>
+        Task<EmployeeModel> GetEmployeeAsync(int workTimeDataId);
+
+        /// <summary>
+        /// Returns a task from given work time data.
+        /// </summary>
+        /// <param name="workTimeDataId">Work time data identifier.</param>
+        /// <returns>Task from work time data.</returns>
+        Task<TaskModel> GetTaskAsync(int workTimeDataId);
     }
 }

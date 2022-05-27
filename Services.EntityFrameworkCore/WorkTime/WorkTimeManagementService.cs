@@ -115,6 +115,30 @@ namespace Services.EntityFrameworkCore.WorkTime
                                                   .ConfigureAwait(false);
         }
 
+        /// <inheritdoc/>
+        public async Task<EmployeeModel> GetEmployeeAsync(int workTimeDataId)
+        {
+            var data = await this.context.FindAsync<WorkTimeData>(workTimeDataId);
+            if (data is null)
+            {
+                throw new ArgumentException("Work time data was not found.", nameof(workTimeDataId));
+            }
+
+            return GetEmployeeModel(data.Employee);
+        }
+
+        /// <inheritdoc/>
+        public async Task<TaskModel> GetTaskAsync(int workTimeDataId)
+        {
+            var data = await this.context.FindAsync<WorkTimeData>(workTimeDataId);
+            if (data is null)
+            {
+                throw new ArgumentException("Work time data was not found.", nameof(workTimeDataId));
+            }
+
+            return GetTaskModel(data.Task);
+        }
+
         private static WorkTimeDataModel GetWorkTimeDataModel(WorkTimeData data) =>
             new()
             {

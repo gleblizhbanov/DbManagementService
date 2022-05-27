@@ -7,7 +7,7 @@ namespace WebApiApp.Controllers
     /// <summary>
     /// Provides a work time data API controller.
     /// </summary>
-    [Route("api/data")]
+    [Route("api/work-data")]
     [ApiController]
     public class WorkTimeDataController : ControllerBase
     {
@@ -114,6 +114,15 @@ namespace WebApiApp.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpGet("{workTimeDataId:int}/employee")]
+        public async Task<ActionResult<EmployeeModel>> GetEmployee(int workTimeDataId)
+        {
+            if (workTimeDataId <= 0)
+            {
+                return BadRequest();
+            }
         }
     }
 }
