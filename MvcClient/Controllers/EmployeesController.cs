@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace MvcClient.Controllers
 {
-    [Route("Employees")]
+    [Route("[controller]")]
     public class EmployeesController : Controller
     {
         private readonly HttpClient client;
