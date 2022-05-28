@@ -1,0 +1,32 @@
+﻿@model IEnumerable<WorkTimeDataViewModel>
+
+@Html.ActionLink("Create new work data", "Create", new{}, htmlAttributes: new { @class = "btn btn-warning mb-3"})
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th>Employee</th>
+            <th>@Html.DisplayNameFor(model => model.WorkDate)</th>
+            <th>@Html.DisplayNameFor(model => model.StartTime)</th>
+            <th>@Html.DisplayNameFor(model => model.StopTime)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var data in Model)
+        {
+            <tr>
+                <td>@data.Employee.FirstName @data.Employee.LastName</td>
+                <td>@Html.DisplayFor(model => data.Task.Name)</td>
+                <td>@Html.DisplayFor(model => data.WorkDate)</td>
+                <td>@Html.DisplayFor(model => data.StartTime)</td>
+                <td>@Html.DisplayFor(model => data.StopTime)</td>
+                <td>
+                    <a class="btn btn-primary" role="button" asp-controller="WorkTimeData" asp-action="Edit" asp-route-id="@data.Id">Edit</a>
+                    <a class="btn btn-danger" role="button" asp-controller="WorkTimeData" asp-action="Delete" asp-route-id="@data.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

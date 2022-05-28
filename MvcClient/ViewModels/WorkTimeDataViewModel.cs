@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using MvcClient.Infrastructure;
+using MvcClient.Models;
 
-namespace MvcClient.Models
+namespace MvcClient.ViewModels
 {
     /// <summary>
     /// Represent a work time.
     /// </summary>
-    public class WorkTimeDataModel
+    public class WorkTimeDataViewModel
     {
         /// <summary>
         /// Gets the identifier of the work time object.
@@ -15,18 +15,14 @@ namespace MvcClient.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets the identifier of the task.
+        /// Gets or sets the task.
         /// </summary>
-        [DisplayName("Task")]
-        [Required]
-        public int? TaskId { get; set; }
+        public TaskModel Task { get; set; }
 
         /// <summary>
-        /// Gets the identifier of the 
+        /// Gets or sets the employee.
         /// </summary>
-        [DisplayName("Employee")]
-        [Required]
-        public int? EmployeeId { get; set; }
+        public EmployeeModel Employee { get; set; }
 
         /// <summary>
         /// Gets or sets the date when the employee worked on the task.
@@ -34,7 +30,6 @@ namespace MvcClient.Models
         [DisplayName("Date")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        [Required]
         public DateTime WorkDate { get; set; }
 
         /// <summary>
@@ -43,8 +38,6 @@ namespace MvcClient.Models
         [DisplayName("Start time")]
         [DisplayFormat(DataFormatString = "{0:hh\\:mm}")]
         [DataType(DataType.Time)]
-        [StartTime(nameof(StopTime))]
-        [Required]
         public TimeSpan StartTime { get; set; }
 
         /// <summary>
@@ -53,8 +46,6 @@ namespace MvcClient.Models
         [DisplayName("Stop time")]
         [DisplayFormat(DataFormatString = "{0:hh\\:mm}")]
         [DataType(DataType.Time)]
-        [StopTime(nameof(StartTime))]
-        [Required]
         public TimeSpan StopTime { get; set; }
     }
 }
