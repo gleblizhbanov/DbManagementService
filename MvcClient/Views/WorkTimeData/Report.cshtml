@@ -1,24 +1,31 @@
-﻿@model IEnumerable<WorkDataViewModel>
+﻿@model ReportViewModel
 
 <h5 class="display-5">Report</h5>
-<hr/>
+<hr />
+
+<form enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Month" class="control-label"></label>
+        <input onchange="this.form.submit()" type="month" asp-for="Month" value="@Model.Month.ToString("yyyy-MM")" max="@DateTime.Today.ToString("yyyy-MM")" class="form-control" />
+    </div>
+</form>
 
 <table class="table table-bordered">
     <thead>
-    <tr>
-        <th>@Html.DisplayNameFor(model => model.Task)</th>
-        <th>@Html.DisplayNameFor(model => model.Employee)</th>
-        <th>@Html.DisplayNameFor(model => model.Duration)</th>
-    </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Data.First().Task)</th>
+            <th>@Html.DisplayNameFor(model => model.Data.First().Employee)</th>
+            <th>@Html.DisplayNameFor(model => model.Data.First().Duration)</th>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var data in Model)
-    {
-        <tr>
-            <td>@data.Task.Name</td>
-            <td>@data.Employee.FirstName @data.Employee.LastName</td>
-            <td>@Html.DisplayFor(model => data.Duration)</td>
-        </tr>
-    }
+        @foreach (var data in Model.Data)
+        {
+            <tr>
+                <td>@data.Task.Name</td>
+                <td>@data.Employee.FirstName @data.Employee.LastName</td>
+                <td>@Html.DisplayFor(model => data.Duration)</td>
+            </tr>
+        }
     </tbody>
 </table>

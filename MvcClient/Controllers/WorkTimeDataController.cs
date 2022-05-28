@@ -91,14 +91,47 @@ namespace MvcClient.Controllers
             return RedirectToAction("Index");
         }
 
+        //[HttpGet("report")]
+        //public async Task<IActionResult> Report()
+        //{
+        //    var dataJson = await this.client.GetStringAsync("work-data").ConfigureAwait(false);
+        //    var data = await Task.WhenAll(JsonConvert.DeserializeObject<IList<WorkTimeDataModel>>(dataJson)!.Select(GetViewModelAsync));
+        //    var viewData = data.Select(GetWorkDataViewModel).OrderBy(x => x.Task.Name);
+        //    ViewData["Title"] = "Report";
+        //    return View(new ReportViewModel()
+        //    {
+        //        Data = viewData,
+        //        Month = DateTime.Today,
+        //    });
+        //}
+
         [HttpGet("report")]
-        public async Task<IActionResult> Report()
+        public async Task<IActionResult> Report(string month)
         {
+            if (!DateTime.TryParse(month, out var selectedMonth))
+            {
+                selectedMonth = DateTime.Today;
+            }
+
             var dataJson = await this.client.GetStringAsync("work-data").ConfigureAwait(false);
-            var data = await Task.WhenAll(JsonConvert.DeserializeObject<IList<WorkTimeDataModel>>(dataJson)!.Select(GetViewModelAsync));
-            var viewData = data.Select(GetWorkDataViewModel).OrderBy(x => x.Task.Name);
+            var data = await Task.WhenAll(JsonConvert.DeserializeObject<IList<WorkTimeDataModel>>(dataJson)!
+                                                     .Where(d => d.WorkDate.Year == selectedMonth.Year && d.WorkDate.Month == selectedMonth.Month)
+                                                     .Select(GetViewModelAsync));
+            var viewData = data.Select(GetWorkDataViewModel)
+                                                     .GroupBy(model => model.Task.Name)
+                                                     .Select(grouping => grouping.GroupBy(x => x.Employee)
+                                                                                 .Select(g => new WorkDataViewModel()
+                                                                                                                                {
+                                                                                                                                    Employee = g.First().Employee,
+                                                                                                                                    Task = grouping.First().Task,
+                                                                                                                                    Duration = g.Sum(x => x.Duration),
+                                                                                                                                }).MaxBy(x => x.Duration));
             ViewData["Title"] = "Report";
-            return View(viewData);
+            return View(new ReportViewModel()
+            {
+                Data = viewData!,
+                Month = selectedMonth,
+            });
         }
 
         private async Task<WorkTimeDataViewModel> GetViewModelAsync(WorkTimeDataModel model) =>
