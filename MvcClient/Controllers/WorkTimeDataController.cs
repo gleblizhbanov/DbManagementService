@@ -80,17 +80,8 @@ namespace MvcClient.Controllers
             var dataJson = await this.client.GetStringAsync($"work-data/{id}").ConfigureAwait(false);
             var data = JsonConvert.DeserializeObject<WorkTimeDataModel>(dataJson)!;
             var viewModel = await GetViewModelAsync(data);
-            var viewData = new WorkDataViewModel()
-            {
-                Id = viewModel.Id,
-                Employee = viewModel.Employee,
-                Task = viewModel.Task,
-                WorkDate = viewModel.WorkDate,
-                Duration = (viewModel.StopTime - viewModel.StartTime).TotalHours,
-            };
-
-            ViewData["Title"] = "Delete work data.";
-            return View(viewData);
+            ViewData["Title"] = "Delete work data";
+            return View(GetWorkDataViewModel(viewModel));
         }
 
         [HttpPost("{id:int}/delete")]
@@ -98,6 +89,16 @@ namespace MvcClient.Controllers
         {
             await this.client.DeleteAsync($"work-data/{data.Id}").ConfigureAwait(false);
             return RedirectToAction("Index");
+        }
+
+        [HttpGet("report")]
+        public async Task<IActionResult> Report()
+        {
+            var dataJson = await this.client.GetStringAsync("work-data").ConfigureAwait(false);
+            var data = await Task.WhenAll(JsonConvert.DeserializeObject<IList<WorkTimeDataModel>>(dataJson)!.Select(GetViewModelAsync));
+            var viewData = data.Select(GetWorkDataViewModel).OrderBy(x => x.Task.Name);
+            ViewData["Title"] = "Report";
+            return View(viewData);
         }
 
         private async Task<WorkTimeDataViewModel> GetViewModelAsync(WorkTimeDataModel model) =>
@@ -109,6 +110,16 @@ namespace MvcClient.Controllers
                 WorkDate = model.WorkDate,
                 StartTime = model.StartTime,
                 StopTime = model.StopTime,
+            };
+
+        private WorkDataViewModel GetWorkDataViewModel(WorkTimeDataViewModel model) =>
+            new()
+            {
+                Id = model.Id,
+                Employee = model.Employee,
+                Task = model.Task,
+                WorkDate = model.WorkDate,
+                Duration = (model.StopTime - model.StartTime).TotalHours,
             };
     }
 }

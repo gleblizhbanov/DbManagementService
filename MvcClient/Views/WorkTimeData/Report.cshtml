@@ -1,0 +1,24 @@
+﻿@model IEnumerable<WorkDataViewModel>
+
+<h5 class="display-5">Report</h5>
+<hr/>
+
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.Task)</th>
+        <th>@Html.DisplayNameFor(model => model.Employee)</th>
+        <th>@Html.DisplayNameFor(model => model.Duration)</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var data in Model)
+    {
+        <tr>
+            <td>@data.Task.Name</td>
+            <td>@data.Employee.FirstName @data.Employee.LastName</td>
+            <td>@Html.DisplayFor(model => data.Duration)</td>
+        </tr>
+    }
+    </tbody>
+</table>
