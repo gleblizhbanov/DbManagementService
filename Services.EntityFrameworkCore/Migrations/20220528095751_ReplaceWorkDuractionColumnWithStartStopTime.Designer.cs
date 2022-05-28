@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Services.EntityFrameworkCore.Context;
 
@@ -11,9 +12,10 @@ using Services.EntityFrameworkCore.Context;
 namespace Services.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(TasksManagementContext))]
-    partial class TasksManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20220528095751_ReplaceWorkDuractionColumnWithStartStopTime")]
+    partial class ReplaceWorkDuractionColumnWithStartStopTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

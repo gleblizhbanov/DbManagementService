@@ -38,7 +38,7 @@ namespace WebApiApp.Controllers
         }
 
         /// <returns>An action result with list of work time data.</returns>
-        /// <inheritdoc cref="IWorkTimeDataManagementService.GetWorkTimeDataAsync"/>>
+        /// <inheritdoc cref="IWorkTimeDataManagementService.GetWorkTimeDataAsync()"/>>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

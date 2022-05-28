@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Services.EntityFrameworkCore.Context;
 
@@ -11,9 +12,10 @@ using Services.EntityFrameworkCore.Context;
 namespace Services.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(TasksManagementContext))]
-    partial class TasksManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20220527164845_AddClusteredPrimaryKeyForWorkTimeData")]
+    partial class AddClusteredPrimaryKeyForWorkTimeData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,10 +98,7 @@ namespace Services.EntityFrameworkCore.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("StopTime")
+                    b.Property<TimeSpan>("SpentTime")
                         .HasColumnType("time");
 
                     b.Property<int>("TaskId")
@@ -117,6 +116,8 @@ namespace Services.EntityFrameworkCore.Migrations
                     b.HasIndex("TaskId");
 
                     b.ToTable("WorkTimeData");
+
+                    b.ToView("Work time data");
                 });
 
             modelBuilder.Entity("Services.EntityFrameworkCore.Entities.WorkTimeData", b =>

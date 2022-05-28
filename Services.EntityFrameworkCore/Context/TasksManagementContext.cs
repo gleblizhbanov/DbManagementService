@@ -53,6 +53,9 @@ namespace Services.EntityFrameworkCore.Context
 
             modelBuilder.Entity<WorkTimeData>(entity =>
             {
+                entity.HasKey(d => d.Id)
+                      .IsClustered();
+
                 entity.HasOne(d => d.Task)
                       .WithMany()
                       .HasForeignKey(d => d.TaskId);

@@ -26,13 +26,20 @@ namespace Services.EntityFrameworkCore.WorkTime
         /// <inheritdoc/>
         public async Task<IList<WorkTimeDataModel>> GetWorkTimeDataAsync()
         {
-            return await this.context.WorkTimeData.Select(data => GetWorkTimeDataModel(data)).ToListAsync().ConfigureAwait(false);
+            return await this.context.WorkTimeData.Include(d => d.Task)
+                                                  .Include(d => d.Employee)
+                                                  .Select(data => GetWorkTimeDataModel(data))
+                                                  .ToListAsync()
+                                                  .ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public bool TryShowWorkTimeData(int id, out WorkTimeDataModel? data)
         {
-            var entity = this.context.Find<WorkTimeData>(id);
+            var entity = this.context.WorkTimeData.Where(d => d.Id == id)
+                                                              .Include(d => d.Task)
+                                                              .Include(d => d.Employee)
+                                                              .FirstOrDefault();
             if (entity is null)
             {
                 data = null;
@@ -68,7 +75,8 @@ namespace Services.EntityFrameworkCore.WorkTime
             entity.TaskId = data.TaskId;
             entity.EmployeeId = data.EmployeeId;
             entity.WorkDate = data.WorkDate;
-            entity.SpentTime = data.SpentTime;
+            entity.StartTime = data.StartTime;
+            entity.StopTime = data.StopTime;
 
             this.context.Update(entity);
             return await this.context.SaveChangesAsync().ConfigureAwait(false) > 0;
@@ -92,6 +100,7 @@ namespace Services.EntityFrameworkCore.WorkTime
         public async Task<IList<EmployeeModel>> GetAllEmployeesWorkedOnTaskAsync(int taskId)
         {
             return await this.context.WorkTimeData.Where(d => d.TaskId == taskId)
+                                                  .Include(d => d.Employee)
                                                   .Select(d => GetEmployeeModel(d.Employee))
                                                   .ToListAsync()
                                                   .ConfigureAwait(false);
@@ -101,6 +110,7 @@ namespace Services.EntityFrameworkCore.WorkTime
         public async Task<IList<TaskModel>> GetAllEmployeeTasksAsync(int employeeId)
         {
             return await this.context.WorkTimeData.Where(d => d.EmployeeId == employeeId)
+                                                  .Include(d => d.Task)
                                                   .Select(d => GetTaskModel(d.Task))
                                                   .ToListAsync()
                                                   .ConfigureAwait(false);
@@ -118,7 +128,9 @@ namespace Services.EntityFrameworkCore.WorkTime
         /// <inheritdoc/>
         public async Task<EmployeeModel> GetEmployeeAsync(int workTimeDataId)
         {
-            var data = await this.context.FindAsync<WorkTimeData>(workTimeDataId);
+            var data = await this.context.WorkTimeData.Where(d => d.Id == workTimeDataId)
+                                                      .Include(d => d.Employee)
+                                                      .FirstOrDefaultAsync();
             if (data is null)
             {
                 throw new ArgumentException("Work time data was not found.", nameof(workTimeDataId));
@@ -130,7 +142,9 @@ namespace Services.EntityFrameworkCore.WorkTime
         /// <inheritdoc/>
         public async Task<TaskModel> GetTaskAsync(int workTimeDataId)
         {
-            var data = await this.context.FindAsync<WorkTimeData>(workTimeDataId);
+            var data = await this.context.WorkTimeData.Where(d => d.Id == workTimeDataId)
+                                                      .Include(d => d.Task)
+                                                      .FirstOrDefaultAsync();
             if (data is null)
             {
                 throw new ArgumentException("Work time data was not found.", nameof(workTimeDataId));
@@ -146,7 +160,8 @@ namespace Services.EntityFrameworkCore.WorkTime
                 TaskId = data.TaskId,
                 EmployeeId = data.EmployeeId,
                 WorkDate = data.WorkDate,
-                SpentTime = data.SpentTime,
+                StartTime = data.StartTime,
+                StopTime = data.StopTime,
             };
 
         private static WorkTimeData GetWorkTimeDataEntity(WorkTimeDataModel data) =>
@@ -156,7 +171,8 @@ namespace Services.EntityFrameworkCore.WorkTime
                 TaskId = data.TaskId,
                 EmployeeId = data.EmployeeId,
                 WorkDate = data.WorkDate,
-                SpentTime = data.SpentTime,
+                StartTime = data.StartTime,
+                StopTime = data.StopTime,
             };
 
         private static EmployeeModel GetEmployeeModel(Employee employee) =>

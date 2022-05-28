@@ -33,16 +33,23 @@ namespace Services.EntityFrameworkCore.Entities
         public DateTime WorkDate { get; set; }
 
         /// <summary>
-        /// Gets or sets the time spent on the task.
+        /// Gets or sets the time when employee started working on the task.
         /// </summary>
         [Required]
         [Column(TypeName = "time")]
-        public TimeSpan SpentTime { get; set; }
+        public TimeSpan StartTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the time when employee stopped working on the task.
+        /// </summary>
+        [Required]
+        [Column(TypeName = "time")]
+        public TimeSpan StopTime { get; set; }
 
         [ForeignKey(nameof(TaskId))]
-        public virtual Task Task { get; set; }
+        public Task Task { get; set; }
 
         [ForeignKey(nameof(EmployeeId))]
-        public virtual Employee Employee { get; set; }
+        public Employee Employee { get; set; }
     }
 }

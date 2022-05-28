@@ -26,8 +26,13 @@
         public DateTime WorkDate { get; set; }
 
         /// <summary>
-        /// Gets or sets the time spent on the task.
+        /// Gets or sets the time when the employee started working on the task.
         /// </summary>
-        public TimeSpan SpentTime { get; set; }
+        public TimeSpan StartTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the time when the employee stopped working on the task.
+        /// </summary>
+        public TimeSpan StopTime { get; set; }
     }
 }
